@@ -15,7 +15,7 @@ echo "[$(date)] Starting AI Trash Generator loop..."
 
 while true; do
     echo "[$(date)] Running opencode -p..."
-    opencode run "根据 GOAL.md 的内容执行任务，完成后提交代码并推送"
+    opencode run "根据 GOAL.md 和 NEXT.md（如存在）的内容执行任务，完成后更新 NEXT.md 记录进度，提交代码并推送"
 
     if [ $? -eq 0 ]; then
         echo "[$(date)] Task completed successfully"
