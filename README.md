@@ -1,85 +1,88 @@
 # AI Trash Generator
 
-让 OpenCode 自动帮你写代码并推送到 GitHub。
+Autonomous AI coding agent that writes code, commits to git, and pushes to GitHub in an infinite loop. Uses MiniMax API via OpenCode.
 
-## 准备工作
+## Setup
 
-### 1. 生成 SSH 密钥
+### 1. Configure `.env`
+
+```bash
+cp .env.example .env
+# Edit .env — paste your MINIMAX_API_KEY
+# Set PUSH_ENABLED=true for GitHub push, false for local-only
+```
+
+### 2. Set up SSH (for push mode only)
 
 ```bash
 ssh-keygen -t ed25519 -C "ai-trash-deploy-key" -f ./ai_trash -N ""
 ```
 
-### 2. 添加 Deploy Key 到 GitHub
+Add `ai_trash.pub` as a **Deploy Key** on your GitHub repo with **write access** enabled.
 
-1. 打开你的 GitHub 仓库 → **Settings** → **Deploy keys** → **Add key**
-2. 粘贴 `ai_trash.pub` 的内容
-3. **勾选 "Allow write access"**
-4. 点击 **Add key**
-
-### 3. 克隆你的仓库
+### 3. Clone your repo
 
 ```bash
 GIT_SSH_COMMAND="ssh -i ./ai_trash" git clone git@github.com:YOUR_USERNAME/YOUR_REPO.git ./repo
 ```
 
-### 4. 添加必要的文件到仓库
+### 4. Add files to the repo
 
 ```bash
-# 复制 GOAL.md 到 repo (如果没有的话)
 cp GOAL.md ./repo/GOAL.md
-
-# 复制自动化脚本到 repo
 cp run_loop.sh ./repo/run_loop.sh
-```
-
-### 5. 修改 GOAL.md
-
-编辑 `./repo/GOAL.md`，填入你希望 AI 执行的任务指令。
-
-### 6. 提交并推送这些文件
-
-```bash
 cd ./repo
 git add GOAL.md run_loop.sh
-git commit -m "添加 AI 自动化脚本"
+git commit -m "Add AI automation scripts"
 git push
 ```
 
-## 启动
+### 5. Launch
 
 ```bash
 docker compose up --build -d
 ```
 
-容器启动后会保持运行。
+Everything is auto-configured: git identity, SSH known_hosts, OpenCode API.
 
-## 进入容器
+### 6. Start the loop
+
+```bash
+docker compose exec opencode-agent bash -c "bash /workspace/repo/run_loop.sh"
+```
+
+Stop with `Ctrl+C`.
+
+## Configuration
+
+All settings live in `.env`:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `MINIMAX_API_KEY` | (required) | MiniMax API key |
+| `MINIMAX_API_BASE` | `https://api.minimax.io/v1` | API endpoint |
+| `GIT_USER_NAME` | `AI Trash Generator` | Git commit author |
+| `GIT_USER_EMAIL` | `ai-trash@localhost` | Git commit email |
+| `PUSH_ENABLED` | `true` | Set to `false` for local-only |
+| `AGENT_LOOP_INTERVAL` | `5` | Seconds between iterations |
+| `AGENT_RETRY_DELAY` | `60` | Seconds before retry on failure |
+
+## Bonus: MiniMax API scripts
+
+The container mounts `../minimax_scripts` at `/minimax_scripts`. You can call:
 
 ```bash
 docker compose exec opencode-agent bash
+/minimax_scripts/scripts/01_chat.py "Hello"
+/minimax_scripts/scripts/03_tts.py "Hello world" -o /tmp/test.mp3
 ```
 
-## 首次配置 (只做一次)
-
-在容器内运行：
+## Docker Compose commands
 
 ```bash
-ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts 2>/dev/null
-chmod 600 ~/.ssh/id_ed25519
-git config --global user.email "ai-trash@localhost"
-git config --global user.name "AI Trash Generator"
-opencode
+docker compose up --build -d      # Build and start
+docker compose exec ... bash      # Enter container
+docker compose logs -f            # Follow logs
+docker compose down               # Stop and remove
+docker compose down -v            # Stop, remove, delete volumes
 ```
-
-进入 opencode 后用 `/connect` 配置你的 AI API。
-
-## 开始自动化
-
-```bash
-bash /workspace/repo/run_loop.sh
-```
-
-会无限循环：AI 根据 GOAL.md 开发 → 提交 → 推送 → 重复。
-
-按 `Ctrl+C` 停止。

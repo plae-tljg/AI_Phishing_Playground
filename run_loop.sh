@@ -11,18 +11,28 @@ fi
 
 cd "$REPO_DIR"
 
-echo "[$(date)] Starting AI Trash Generator loop..."
+echo "[$(date)] Starting AI agent loop..."
+echo "  PUSH_ENABLED=${PUSH_ENABLED:-false}"
+echo "  LOOP_INTERVAL=${AGENT_LOOP_INTERVAL:-5}s"
+echo ""
 
 while true; do
-    echo "[$(date)] Running opencode -p..."
-    opencode run "根据 GOAL.md 和 NEXT.md（如存在）的内容执行任务，完成后更新 NEXT.md 记录进度，提交代码并推送"
+    echo "[$(date)] Running opencode..."
+
+    opencode run "Read GOAL.md and NEXT.md (if exists). Execute tasks. Update NEXT.md with progress. Commit changes with clear messages."
 
     if [ $? -eq 0 ]; then
-        echo "[$(date)] Task completed successfully"
+        if [ "${PUSH_ENABLED:-false}" = "true" ]; then
+            echo "[$(date)] Pushing to GitHub..."
+            git push 2>&1 || echo "[$(date)] Push failed (will retry next loop)"
+        else
+            echo "[$(date)] PUSH_ENABLED=false — skipping push"
+        fi
+        echo "[$(date)] Iteration complete"
     else
-        echo "[$(date)] Task failed, retrying in 60 seconds..."
-        sleep 60
+        echo "[$(date)] Task failed, retrying in ${AGENT_RETRY_DELAY:-60}s..."
+        sleep "${AGENT_RETRY_DELAY:-60}"
     fi
 
-    sleep 5
+    sleep "${AGENT_LOOP_INTERVAL:-5}"
 done

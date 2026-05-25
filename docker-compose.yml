@@ -5,6 +5,14 @@ services:
     volumes:
       - ./repo:/workspace/repo
       - ./ai_trash:/root/.ssh/id_ed25519:ro
+      - ../minimax_scripts:/minimax_scripts:ro
     environment:
+      - MINIMAX_API_KEY
+      - MINIMAX_API_BASE
       - OPENAI_API_KEY=${MINIMAX_API_KEY}
+      - GIT_USER_NAME
+      - GIT_USER_EMAIL
+      - PUSH_ENABLED
+      - AGENT_LOOP_INTERVAL
+      - AGENT_RETRY_DELAY
     working_dir: /workspace/repo

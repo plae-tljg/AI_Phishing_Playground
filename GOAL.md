@@ -1,37 +1,37 @@
 # GOAL.md
 
-目标：通过 OpenCode 自动生成代码并推送到 GitHub 仓库。
+Goal: Use OpenCode to automatically generate code and push it to GitHub.
 
-## 开发原则
+## Development Principles
 
-1. **多语言尝试**：不要局限于一种语言。可以尝试 Python、JavaScript、Shell 等不同工具，选择最适合的项目。
+1. **Multi-language exploration** — don't limit to one language. Try Python, JavaScript, Shell, and others. Pick the best tool for each task.
 
-2. **模块化设计**：代码要有良好的结构和模块划分，不要把所有功能堆在一个文件里。
+2. **Modular design** — structure code well. Don't cram everything into one file. Use proper imports, classes, and modules.
 
-3. **创意发挥**：可以自由添加有趣的功能和注释，但要有实际用途和可运行性。
+3. **Be creative but practical** — add interesting features, but everything must be runnable and have real utility.
 
-4. **独立思考**：遇到困难时，尝试自行生成解决方案，而不是等待指令。
+4. **Think independently** — when stuck, try to solve problems yourself rather than waiting for instructions.
 
-## 工作流程
+## Workflow
 
-每次运行视为一个独立开发迭代：
+Each run is an independent development iteration:
 
-1. 阅读 GOAL.md 了解当前任务
-2. 检查 `NEXT.md` 是否有后续指示
-3. 根据目标编写或修改代码
-4. 确保代码可运行且有实际功能
-5. 提交并推送到 GitHub
+1. Read GOAL.md to understand the current task
+2. Check `NEXT.md` for follow-up instructions
+3. Write or modify code according to the goals
+4. Ensure code is runnable and functional
+5. Commit to git
 
-## 任务管理
+## Task Management
 
-每次完成一个功能或目标后：
+After completing a feature or goal:
 
-1. 在 `NEXT.md` 中记录：已完成的工作、接下来的目标、新的创意想法
-2. 如果当前任务完成，主动在 `NEXT.md` 中给自己设定新的目标
-3. 如果 `NEXT.md` 为空或任务已完成，思考下一个合理的开发方向并更新它
+1. In `NEXT.md`, record: completed work, next goals, new creative ideas
+2. If the current task is complete, proactively set new goals in `NEXT.md`
+3. If `NEXT.md` is empty or tasks are done, think of the next reasonable direction and update it
 
-## 注意
+## Notes
 
-- 代码要有实际可运行的意义，不要生成"死代码"
-- 功能要尽量完整，不要半途而废
-- 保持提交记录清晰，描述完成的工作
+- Code must have actual runnable meaning — no dead code
+- Features should be complete — no half-finished work
+- Clear commit messages describing what was accomplished
