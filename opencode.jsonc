@@ -1,0 +1,13 @@
+{
+  // OpenCode configuration for MiniMax API (International)
+  "$schema": "https://opencode.ai/config.json",
+
+  // Lock model to MiniMax-M2.7 (Token Plan)
+  // NOT highspeed — Token Plan doesn't support highspeed variants
+  "model": "minimax-coding-plan/MiniMax-M2.7",
+
+  // Allow git operations without interactive approval
+  "permission": {
+    "bash": "allow"
+  }
+}

@@ -9,6 +9,7 @@ RUN pip3 install --break-system-packages requests python-dotenv anthropic
 RUN curl -fsSL https://opencode.ai/install | bash \
     && ln -s /root/.opencode/bin/opencode /usr/local/bin/opencode
 
+COPY opencode.jsonc /root/
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 

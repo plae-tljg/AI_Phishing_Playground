@@ -4,11 +4,13 @@ set -e
 echo "=== AI Phishing Playground — Entrypoint ==="
 
 # --------------------------------------------------
-# 1. Git identity
+# 1. Git identity + safe.directory
 # --------------------------------------------------
 git config --global user.name  "${GIT_USER_NAME:-AI Trash Generator}"
 git config --global user.email "${GIT_USER_EMAIL:-ai-trash@localhost}"
+git config --global --add safe.directory /workspace/repo
 echo "[entrypoint] Git: ${GIT_USER_NAME:-AI Trash Generator} <${GIT_USER_EMAIL:-ai-trash@localhost}>"
+echo "[entrypoint] safe.directory: /workspace/repo added"
 
 # --------------------------------------------------
 # 2. SSH known_hosts (only if PUSH_ENABLED)
@@ -28,14 +30,30 @@ else
 fi
 
 # --------------------------------------------------
-# 3. OpenCode API (from env, no /connect needed)
+# 3. OpenCode auth + config (no /connect needed)
 # --------------------------------------------------
-if [ -n "${OPENAI_API_KEY}" ]; then
-    echo "[entrypoint] API key detected (OPENAI_API_KEY)"
-    echo "[entrypoint] API base: ${MINIMAX_API_BASE:-https://api.minimax.io/v1}"
-    echo "[entrypoint] OpenCode uses OpenAI-compatible MiniMax endpoint"
+if [ -n "${MINIMAX_API_KEY}" ]; then
+    mkdir -p ~/.local/share/opencode
+    cat > ~/.local/share/opencode/auth.json << AEOF
+{
+  "minimax-coding-plan": {
+    "type": "api",
+    "key": "${MINIMAX_API_KEY}"
+  }
+}
+AEOF
+    chmod 600 ~/.local/share/opencode/auth.json
+    echo "[entrypoint] OpenCode auth: minimax-coding-plan configured"
+
+    # Copy opencode.jsonc into working dir (if not already present)
+    if [ ! -f /workspace/repo/opencode.jsonc ]; then
+        cp /root/opencode.jsonc /workspace/repo/opencode.jsonc
+        echo "[entrypoint] opencode.jsonc copied to /workspace/repo/"
+    else
+        echo "[entrypoint] opencode.jsonc already present in repo"
+    fi
 else
-    echo "[entrypoint] WARNING: OPENAI_API_KEY not set — run /connect inside opencode"
+    echo "[entrypoint] WARNING: MINIMAX_API_KEY not set — run /connect inside opencode"
 fi
 
 # --------------------------------------------------
